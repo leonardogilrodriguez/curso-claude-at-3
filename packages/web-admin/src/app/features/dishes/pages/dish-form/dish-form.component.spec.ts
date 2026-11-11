@@ -20,7 +20,7 @@ export async function setup() {
     imports: [DishFormComponent],
     providers: [
       provideZonelessChangeDetection(),
-      provideRouter([]),
+      provideRouter([{ path: '**', children: [] }]),
       { provide: DishStore, useValue: dishStore },
       { provide: IngredientStore, useValue: ingredientStore },
       importProvidersFrom(LucideAngularModule.pick({ ChevronLeft, Plus, Trash2 }))
@@ -162,5 +162,76 @@ describe('DishFormComponent: controles semánticos', () => {
     component.loading.set(true)
     await fixture.whenStable()
     expect((el.querySelector('button[type=submit]') as HTMLButtonElement).disabled).toBe(true)
+  })
+})
+
+async function submit(fixture: ComponentFixture<DishFormComponent>) {
+  const el = fixture.nativeElement as HTMLElement
+  el.querySelector<HTMLButtonElement>('button[type=submit]')!.click()
+  await fixture.whenStable()
+  await new Promise(r => setTimeout(r))
+  await fixture.whenStable()
+}
+
+describe('DishFormComponent: errores al enviar', () => {
+  beforeEach(() => TestBed.resetTestingModule())
+
+  it('enviar vacío no guarda y muestra un resumen con 2 errores', async () => {
+    const { fixture, el, dishStore } = await setup()
+    await submit(fixture)
+    expect(dishStore.create).not.toHaveBeenCalled()
+    const summary = el.querySelector('.error-summary')
+    expect(summary?.getAttribute('role')).toBe('alert')
+    expect(summary?.querySelectorAll('li')).toHaveLength(2)
+  })
+
+  it('los campos inválidos tienen aria-invalid y aria-describedby al mensaje', async () => {
+    const { fixture, el } = await setup()
+    await submit(fixture)
+    for (const [label, errId] of [['Nombre del plato', 'dish-name-error'], ['Precio (€)', 'dish-price-error']]) {
+      const field = byLabel(el, label)!
+      expect(field.getAttribute('aria-invalid')).toBe('true')
+      expect(field.getAttribute('aria-describedby')).toBe(errId)
+      expect(el.querySelector(`#${errId}`)?.textContent?.length).toBeGreaterThan(0)
+    }
+  })
+
+  it('el foco pasa al resumen de errores', async () => {
+    const { fixture, el } = await setup()
+    document.body.appendChild(el)
+    await submit(fixture)
+    expect(document.activeElement).toBe(el.querySelector('.error-summary'))
+    el.remove()
+  })
+
+  it('pulsar un enlace del resumen enfoca el campo y no navega', async () => {
+    const { fixture, el } = await setup()
+    document.body.appendChild(el)
+    await submit(fixture)
+    const link = el.querySelector<HTMLAnchorElement>('.error-summary a')!
+    const event = new MouseEvent('click', { cancelable: true, bubbles: true })
+    link.dispatchEvent(event)
+    expect(event.defaultPrevented).toBe(true)
+    expect(document.activeElement).toBe(byLabel(el, 'Nombre del plato'))
+    el.remove()
+  })
+
+  it('con el nombre y el precio válidos llama a create una vez', async () => {
+    const { fixture, el, dishStore } = await setup()
+    setValue(byLabel(el, 'Nombre del plato')!, 'Tarta')
+    setValue(byLabel(el, 'Precio (€)')!, '6.5')
+    await submit(fixture)
+    expect(dishStore.create).toHaveBeenCalledTimes(1)
+    expect(dishStore.create.mock.calls[0][1]).toMatchObject({ name: 'Tarta', price: 6.5 })
+    expect(el.querySelector('.error-summary')).toBeNull()
+  })
+
+  it('corregir tras un error elimina los mensajes al reenviar', async () => {
+    const { fixture, el } = await setup()
+    await submit(fixture)
+    setValue(byLabel(el, 'Nombre del plato')!, 'Tarta')
+    setValue(byLabel(el, 'Precio (€)')!, '4')
+    await submit(fixture)
+    expect(el.querySelectorAll('[aria-invalid="true"]')).toHaveLength(0)
   })
 })

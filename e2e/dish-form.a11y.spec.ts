@@ -7,7 +7,7 @@ const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']
 // Solo el formulario (el menú lateral y el resto de la aplicación quedan fuera del alcance de la issue).
 async function scan(page: Page) {
   // Esperar a que acaben las animaciones de entrada: axe mide el contraste con la opacidad actual.
-  await page.evaluate(() => Promise.all(document.getAnimations().map(a => a.finished)))
+  await page.evaluate(() => Promise.all(document.getAnimations().map(a => a.finished.catch(() => undefined))))
   return new AxeBuilder({ page }).include('app-dish-form').withTags(WCAG_TAGS).analyze()
 }
 
@@ -37,7 +37,7 @@ test.describe('Formulario de platos: accesibilidad (axe, WCAG 2.2 AA)', () => {
 
   test('formulario con un ingrediente añadido y error de ingrediente sin violaciones', async ({ page }) => {
     await page.goto('/restaurants/rest-1/dishes/new')
-    await page.getByLabel('Ingrediente').selectOption({ index: 1 })
+    await page.getByLabel('Ingrediente', { exact: true }).selectOption({ index: 1 })
     await page.getByRole('button', { name: 'Añadir ingrediente' }).click()
     await page.getByRole('button', { name: 'Añadir ingrediente' }).click() // sin selección → error
     await expect(page.locator('#ingredient-error')).toBeVisible()

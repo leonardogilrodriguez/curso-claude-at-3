@@ -105,8 +105,14 @@ export async function addIngredientUI(
   const el = fixture.nativeElement as HTMLElement
   setValue(byLabel(el, 'Ingrediente')!, id)
   setValue(byLabel(el, 'Cantidad')!, String(qty))
+  // Como en el navegador, debe haber un ciclo de detección entre rellenar y pulsar Añadir
+  await fixture.whenStable()
+  await new Promise(r => setTimeout(r, 20))
   el.querySelector<HTMLButtonElement>('button.add-btn')!.click()
   await fixture.whenStable()
+  await new Promise(r => setTimeout(r)) // ngModel escribe el valor al DOM de forma asíncrona
+  await fixture.whenStable()
+  await new Promise(r => setTimeout(r, 20))
 }
 
 describe('DishFormComponent: controles semánticos', () => {
@@ -233,5 +239,68 @@ describe('DishFormComponent: errores al enviar', () => {
     setValue(byLabel(el, 'Precio (€)')!, '4')
     await submit(fixture)
     expect(el.querySelectorAll('[aria-invalid="true"]')).toHaveLength(0)
+  })
+})
+
+describe('DishFormComponent: ingredientes', () => {
+  beforeEach(() => TestBed.resetTestingModule())
+
+  const live = (el: HTMLElement) => el.querySelector('[role="status"]')?.textContent?.trim()
+
+  it('añadir muestra el chip, vacía el selector y lo anuncia', async () => {
+    const { fixture, el } = await setup()
+    await addIngredientUI(fixture, 'i1', 2)
+    expect(el.querySelector('.ingredient-chip')?.textContent).toContain('Tomate (kg) — 2')
+    const sel = byLabel(el, 'Ingrediente') as HTMLSelectElement
+    expect(sel.value).toBe('')
+    expect(live(el)).toBe('Ingrediente añadido: Tomate (kg).')
+  })
+
+  it('sin seleccionar ingrediente muestra un error enlazado con aria-describedby', async () => {
+    const { fixture, el } = await setup()
+    await addIngredientUI(fixture, '', 1)
+    expect(el.querySelector('#ingredient-error')?.textContent).toContain('Selecciona un ingrediente')
+    expect(byLabel(el, 'Ingrediente')?.getAttribute('aria-invalid')).toBe('true')
+    expect(byLabel(el, 'Ingrediente')?.getAttribute('aria-describedby')).toBe('ingredient-error')
+    expect(el.querySelectorAll('.ingredient-chip')).toHaveLength(0)
+  })
+
+  it('una cantidad 0 muestra error', async () => {
+    const { fixture, el } = await setup()
+    await addIngredientUI(fixture, 'i1', 0)
+    expect(el.querySelector('#ingredient-error')?.textContent).toContain('mayor que 0')
+  })
+
+  it('un ingrediente duplicado muestra error y no se añade dos veces', async () => {
+    const { fixture, el } = await setup()
+    await addIngredientUI(fixture, 'i1', 1)
+    await addIngredientUI(fixture, 'i1', 1)
+    expect(el.querySelector('#ingredient-error')?.textContent).toContain('ya está')
+    expect(el.querySelectorAll('.ingredient-chip')).toHaveLength(1)
+  })
+
+  it('el error desaparece tras añadir correctamente', async () => {
+    const { fixture, el } = await setup()
+    await addIngredientUI(fixture, '', 1)
+    await addIngredientUI(fixture, 'i2', 1)
+    expect(el.querySelector('#ingredient-error')).toBeNull()
+  })
+
+  it('quitar elimina el chip, lo anuncia y lleva el foco al selector', async () => {
+    const { fixture, el } = await setup()
+    document.body.appendChild(el)
+    await addIngredientUI(fixture, 'i1', 1)
+    el.querySelector<HTMLButtonElement>('.chip-remove')!.click()
+    await fixture.whenStable()
+    expect(el.querySelectorAll('.ingredient-chip')).toHaveLength(0)
+    expect(live(el)).toBe('Ingrediente quitado: Tomate (kg).')
+    expect(document.activeElement).toBe(byLabel(el, 'Ingrediente'))
+    el.remove()
+  })
+
+  it('sin ingredientes se muestra un texto vacío en vez de la lista', async () => {
+    const { el } = await setup()
+    expect(el.querySelector('ul.ingredient-chips')).toBeNull()
+    expect(el.querySelector('.ingredients-empty')).not.toBeNull()
   })
 })

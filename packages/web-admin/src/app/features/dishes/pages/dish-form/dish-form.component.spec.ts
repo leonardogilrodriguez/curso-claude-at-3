@@ -90,3 +90,77 @@ describe('DishFormComponent: etiquetas y estructura', () => {
     expect(el.querySelector('form')?.getAttribute('aria-labelledby')).toBe('form-title')
   })
 })
+
+function setValue(el: HTMLElement, value: string) {
+  const input = el as HTMLInputElement | HTMLSelectElement
+  input.value = value
+  input.dispatchEvent(new Event(input.tagName === 'SELECT' ? 'change' : 'input'))
+}
+
+export async function addIngredientUI(
+  fixture: ComponentFixture<DishFormComponent>,
+  id: string,
+  qty: number
+) {
+  const el = fixture.nativeElement as HTMLElement
+  setValue(byLabel(el, 'Ingrediente')!, id)
+  setValue(byLabel(el, 'Cantidad')!, String(qty))
+  el.querySelector<HTMLButtonElement>('button.add-btn')!.click()
+  await fixture.whenStable()
+}
+
+describe('DishFormComponent: controles semánticos', () => {
+  beforeEach(() => TestBed.resetTestingModule())
+
+  it('Guardar es un botón submit', async () => {
+    const { el } = await setup()
+    const btn = el.querySelector('.form-actions button')
+    expect(btn?.getAttribute('type')).toBe('submit')
+    expect(btn?.textContent).toContain('Guardar')
+  })
+
+  it('Cancelar es un enlace', async () => {
+    const { el } = await setup()
+    expect(el.querySelector('.form-actions a')?.textContent).toContain('Cancelar')
+  })
+
+  it('no hay div con manejador de clic', async () => {
+    const { fixture, el } = await setup()
+    expect(fixture.nativeElement.outerHTML).not.toMatch(/<div[^>]*(ng-reflect-)?click/)
+    expect(el.querySelectorAll('div[role="button"]')).toHaveLength(0)
+  })
+
+  it('el botón Añadir ingrediente es type=button y tiene nombre', async () => {
+    const { el } = await setup()
+    const btn = el.querySelector<HTMLButtonElement>('button.add-btn')
+    expect(btn?.type).toBe('button')
+    expect(btn?.textContent).toContain('Añadir ingrediente')
+  })
+
+  it('el botón Quitar es type=button y nombra el ingrediente', async () => {
+    const { fixture, el } = await setup()
+    await addIngredientUI(fixture, 'i1', 2)
+    const btn = el.querySelector<HTMLButtonElement>('.chip-remove')
+    expect(btn?.type).toBe('button')
+    expect(btn?.getAttribute('aria-label')).toBe('Quitar Tomate (kg)')
+  })
+
+  it('Enter en la cantidad añade el ingrediente sin enviar el formulario', async () => {
+    const { fixture, el, component, dishStore } = await setup()
+    setValue(byLabel(el, 'Ingrediente')!, 'i1')
+    setValue(byLabel(el, 'Cantidad')!, '3')
+    const event = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true })
+    byLabel(el, 'Cantidad')!.dispatchEvent(event)
+    await fixture.whenStable()
+    expect(event.defaultPrevented).toBe(true)
+    expect(component.form.ingredients).toEqual([{ ingredientId: 'i1', quantity: 3 }])
+    expect(dishStore.create).not.toHaveBeenCalled()
+  })
+
+  it('Guardar se deshabilita mientras se guarda', async () => {
+    const { fixture, el, component } = await setup()
+    component.loading.set(true)
+    await fixture.whenStable()
+    expect((el.querySelector('button[type=submit]') as HTMLButtonElement).disabled).toBe(true)
+  })
+})

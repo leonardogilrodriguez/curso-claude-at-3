@@ -54,8 +54,8 @@ Hacer que el formulario de creación/edición de platos de `web-admin` cumpla WC
 Cada tarea de implementación empieza por los tests unitarios (rojo) y termina con el código que los pone en verde. Se ejecutan con `npm run test -w @resttek/web-admin`.
 
 1. [x] Configurar Vitest en `web-admin`: target `test` en `angular.json`, script `test`, instalar `vitest` y `jsdom`; añadir un spec trivial del componente que renderice el formulario para comprobar que el runner funciona — `packages/web-admin/angular.json` (~8 min)
-2. [ ] Tests de validación: nombre vacío/solo espacios → error; precio vacío, 0 o negativo → error; valores válidos → sin errores; ingrediente sin seleccionar, cantidad ≤ 0 o duplicado → error — `dish-form.validation.spec.ts` (~8 min)
-3. [ ] Implementar `validateDish()` y `validateIngredient()` hasta pasar los tests de la tarea 2 — `dish-form.validation.ts` (~8 min)
+2. [x] Tests de validación: nombre vacío/solo espacios → error; precio vacío, 0 o negativo → error; valores válidos → sin errores; ingrediente sin seleccionar, cantidad ≤ 0 o duplicado → error — `dish-form.validation.spec.ts` (~8 min)
+3. [x] Implementar `validateDish()` y `validateIngredient()` hasta pasar los tests de la tarea 2 — `dish-form.validation.ts` (~8 min)
 4. [ ] Tests de etiquetas: cada campo se localiza con `getByLabel` (nombre, precio, categoría, disponible, descripción, ingrediente, cantidad); el título es un `<h1>`; el enlace de volver tiene nombre accesible — `dish-form.component.spec.ts` (~8 min)
 5. [ ] Implementar las etiquetas, `id`s, `<h1>`, `fieldset/legend` de ingredientes y `aria-label` del enlace; indicar campos obligatorios — `dish-form.component.html` (~8 min)
 6. [ ] Tests de controles semánticos: Guardar es `button[type=submit]`, Añadir y Quitar son `button[type=button]` con nombre accesible («Quitar Tomate»), Cancelar es un enlace; Enter en el campo cantidad añade el ingrediente sin enviar el formulario; Guardar se deshabilita mientras `loading` — `dish-form.component.spec.ts` (~8 min)

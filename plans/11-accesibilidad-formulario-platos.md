@@ -65,8 +65,8 @@ Cada tarea de implementación empieza por los tests unitarios (rojo) y termina c
 10. [x] Tests de ingredientes: añadir muestra el chip y vacía el selector; los errores de ingrediente (sin elegir, cantidad ≤ 0, duplicado) se muestran con `aria-describedby`; la región `aria-live` anuncia altas y bajas; tras quitar, el foco va al selector de ingrediente — `dish-form.component.spec.ts` (~10 min)
 11. [x] Implementar `addIngredient()`/`removeIngredient()` con mensajes y gestión del foco — `dish-form.component.ts` y `.html` (~8 min)
 12. [x] Estilos accesibles: `:focus-visible` global, no suprimir el outline de `button`, `sr-only`, estilos de error y de fieldset, placeholders e iconos con contraste ≥ 4.5:1 (sin test unitario: jsdom no calcula contraste ni foco visual; se cubre con axe y vídeo) — `styles.css` y `dish-form.component.css` (~8 min)
-13. [ ] Instalar y configurar Playwright (`@playwright/test`, `@axe-core/playwright`), `playwright.config.ts` con `webServer` para API y web-admin, `outputDir` y scripts `test:e2e`; helper de login (sin test unitario) — `e2e/playwright.config.ts` (~10 min)
-14. [ ] Test e2e axe: formulario nuevo, con errores visibles y en edición sin violaciones WCAG 2.x A/AA (`wcag2a`, `wcag2aa`, `wcag22aa`) — `e2e/dish-form.a11y.spec.ts` (~8 min)
+13. [x] Instalar y configurar Playwright (`@playwright/test`, `@axe-core/playwright`), `playwright.config.ts` con `webServer` para API y web-admin, `outputDir` y scripts `test:e2e`; helper de login (sin test unitario) — `e2e/playwright.config.ts` (~10 min)
+14. [x] Test e2e axe: formulario nuevo, con errores visibles y en edición sin violaciones WCAG 2.x A/AA (`wcag2a`, `wcag2aa`, `wcag22aa`) — `e2e/dish-form.a11y.spec.ts` (~8 min)
 15. [ ] Test e2e solo teclado con vídeo: login, entrar a Nuevo plato, enviar incompleto y ver errores, modificar datos, añadir/quitar ingredientes, guardar y ver el plato en la lista; copiar el vídeo a `e2e-videos/dish-form-keyboard.webm` — `e2e/dish-form.keyboard.spec.ts` (~10 min)
 16. [ ] Limpieza y documentación: borrar `scripts/record-dish-form-a11y.mjs` y `scripts/videos/`, actualizar `.gitignore` y `CLAUDE.md` — `CLAUDE.md` (~5 min)
 

@@ -68,7 +68,7 @@ Cada tarea de implementación empieza por los tests unitarios (rojo) y termina c
 13. [x] Instalar y configurar Playwright (`@playwright/test`, `@axe-core/playwright`), `playwright.config.ts` con `webServer` para API y web-admin, `outputDir` y scripts `test:e2e`; helper de login (sin test unitario) — `e2e/playwright.config.ts` (~10 min)
 14. [x] Test e2e axe: formulario nuevo, con errores visibles y en edición sin violaciones WCAG 2.x A/AA (`wcag2a`, `wcag2aa`, `wcag22aa`) — `e2e/dish-form.a11y.spec.ts` (~8 min)
 15. [x] Test e2e solo teclado con vídeo: login, entrar a Nuevo plato, enviar incompleto y ver errores, modificar datos, añadir/quitar ingredientes, guardar y ver el plato en la lista; copiar el vídeo a `e2e-videos/dish-form-keyboard.webm` — `e2e/dish-form.keyboard.spec.ts` (~10 min)
-16. [ ] Limpieza y documentación: borrar `scripts/record-dish-form-a11y.mjs` y `scripts/videos/`, actualizar `.gitignore` y `CLAUDE.md` — `CLAUDE.md` (~5 min)
+16. [x] Limpieza y documentación: borrar `scripts/record-dish-form-a11y.mjs` y `scripts/videos/`, actualizar `.gitignore` y `CLAUDE.md` — `CLAUDE.md` (~5 min)
 
 ## Criterios de aceptación
 

@@ -21,7 +21,9 @@ Requires Node 22+. Run from the repo root unless noted.
 - Single API test by name: `cd packages/api && npx vitest run -t "nombre del test"`
 - API watch mode: `npm run test:watch -w @resttek/api`
 - Frontend build: `npm run build -w @resttek/web-admin` (same pattern for `web-empleados` and `web-clientes`).
-- There is no lint script and no frontend test runner. The Angular `tsconfig.spec.json` files exist, but no spec files or test scripts do.
+- `npm run test -w @resttek/web-admin`: unit tests for web-admin (Vitest through Angular's `@angular/build:unit-test` builder, jsdom). `web-empleados` and `web-clientes` still have no frontend test runner.
+- `npm run test:e2e`: Playwright e2e tests in `e2e/` (config in `e2e/playwright.config.ts`). It starts the API and web-admin if they are not already running (`ADMIN_URL` overrides the admin URL) and needs seeded data (`npm run seed`). Includes the axe accessibility checks (`dish-form.a11y.spec.ts`) and the keyboard-only recording of the dish form, which saves its video to `e2e-videos/dish-form-keyboard.webm`.
+- There is no lint script.
 
 ## Architecture
 

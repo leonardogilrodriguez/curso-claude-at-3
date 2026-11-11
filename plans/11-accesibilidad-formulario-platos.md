@@ -53,7 +53,7 @@ Hacer que el formulario de creación/edición de platos de `web-admin` cumpla WC
 
 Cada tarea de implementación empieza por los tests unitarios (rojo) y termina con el código que los pone en verde. Se ejecutan con `npm run test -w @resttek/web-admin`.
 
-1. [ ] Configurar Vitest en `web-admin`: target `test` en `angular.json`, script `test`, instalar `vitest` y `jsdom`; añadir un spec trivial del componente que renderice el formulario para comprobar que el runner funciona — `packages/web-admin/angular.json` (~8 min)
+1. [x] Configurar Vitest en `web-admin`: target `test` en `angular.json`, script `test`, instalar `vitest` y `jsdom`; añadir un spec trivial del componente que renderice el formulario para comprobar que el runner funciona — `packages/web-admin/angular.json` (~8 min)
 2. [ ] Tests de validación: nombre vacío/solo espacios → error; precio vacío, 0 o negativo → error; valores válidos → sin errores; ingrediente sin seleccionar, cantidad ≤ 0 o duplicado → error — `dish-form.validation.spec.ts` (~8 min)
 3. [ ] Implementar `validateDish()` y `validateIngredient()` hasta pasar los tests de la tarea 2 — `dish-form.validation.ts` (~8 min)
 4. [ ] Tests de etiquetas: cada campo se localiza con `getByLabel` (nombre, precio, categoría, disponible, descripción, ingrediente, cantidad); el título es un `<h1>`; el enlace de volver tiene nombre accesible — `dish-form.component.spec.ts` (~8 min)

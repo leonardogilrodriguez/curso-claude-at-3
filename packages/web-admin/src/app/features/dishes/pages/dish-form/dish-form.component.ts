@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs'
 import { DishStore } from '../../store/dish.store'
 import { DishService } from '../../services/dish.service'
 import { IngredientStore } from '../../../ingredients/store/ingredient.store'
+import { validateDish, validateIngredient, type DishFormErrors } from './dish-form.validation'
 import type { CreateDishDto, DishCategory } from '../../models/dish.model'
 
 @Component({
@@ -29,7 +30,7 @@ export class DishFormComponent implements OnInit {
   error = signal<string | null>(null)
 
   submitted = signal(false)
-  errors = signal<{ name?: string; price?: string }>({})
+  errors = signal<DishFormErrors>({})
   ingredientError = signal<string | null>(null)
   liveMessage = signal('')
   private readonly errorSummary = viewChild<ElementRef<HTMLElement>>('errorSummary')
@@ -114,16 +115,9 @@ export class DishFormComponent implements OnInit {
   }
 
   addIngredient(): void {
-    if (!this.newIngredientId) {
-      this.ingredientError.set('Selecciona un ingrediente para añadirlo.')
-      return
-    }
-    if (!(this.newIngredientQty > 0)) {
-      this.ingredientError.set('La cantidad debe ser mayor que 0.')
-      return
-    }
-    if (this.form.ingredients.some(i => i.ingredientId === this.newIngredientId)) {
-      this.ingredientError.set('Ese ingrediente ya está en el plato.')
+    const problem = validateIngredient(this.newIngredientId, this.newIngredientQty, this.form.ingredients)
+    if (problem) {
+      this.ingredientError.set(problem)
       return
     }
 
@@ -152,14 +146,7 @@ export class DishFormComponent implements OnInit {
   }
 
   private validate(): boolean {
-    const errors: { name?: string; price?: string } = {}
-    if (!this.form.name?.trim()) errors.name = 'El nombre del plato es obligatorio.'
-    const price = this.form.price as unknown
-    if (price === null || price === '' || price === undefined) {
-      errors.price = 'El precio es obligatorio.'
-    } else if (!(Number(price) > 0)) {
-      errors.price = 'El precio debe ser mayor que 0.'
-    }
+    const errors = validateDish(this.form)
     this.errors.set(errors)
     return Object.keys(errors).length === 0
   }

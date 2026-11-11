@@ -11,9 +11,11 @@
     "dev:empleados": "npm run start -w @resttek/web-empleados",
     "dev:clientes": "npm run start -w @resttek/web-clientes",
     "test": "npm run test -w @resttek/api",
-    "seed": "npm run seed -w @resttek/api"
+    "seed": "npm run seed -w @resttek/api",
+    "test:e2e": "playwright test -c e2e/playwright.config.ts"
   },
   "devDependencies": {
-    "playwright": "^1.64.1"
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.65.0"
   }
 }

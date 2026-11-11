@@ -147,7 +147,14 @@ select.form-control {
   margin: 6px 0 0 20px;
 }
 
+.error-summary {
+  color: #fecaca; /* contraste AA sobre el fondo rojo translúcido */
+}
+
 .error-summary a {
+  display: inline-block;
+  min-height: 24px; /* WCAG 2.2 · 2.5.8 tamaño mínimo del objetivo */
+  padding: 2px 0;
   color: inherit;
   text-decoration: underline;
 }

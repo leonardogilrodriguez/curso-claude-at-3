@@ -53,35 +53,35 @@ Hacer que el formulario de creación/edición de platos de `web-admin` cumpla WC
 
 Cada tarea de implementación empieza por los tests unitarios (rojo) y termina con el código que los pone en verde. Se ejecutan con `npm run test -w @resttek/web-admin`.
 
-1. [ ] Configurar Vitest en `web-admin`: target `test` en `angular.json`, script `test`, instalar `vitest` y `jsdom`; añadir un spec trivial del componente que renderice el formulario para comprobar que el runner funciona — `packages/web-admin/angular.json` (~8 min)
-2. [ ] Tests de validación: nombre vacío/solo espacios → error; precio vacío, 0 o negativo → error; valores válidos → sin errores; ingrediente sin seleccionar, cantidad ≤ 0 o duplicado → error — `dish-form.validation.spec.ts` (~8 min)
-3. [ ] Implementar `validateDish()` y `validateIngredient()` hasta pasar los tests de la tarea 2 — `dish-form.validation.ts` (~8 min)
-4. [ ] Tests de etiquetas: cada campo se localiza con `getByLabel` (nombre, precio, categoría, disponible, descripción, ingrediente, cantidad); el título es un `<h1>`; el enlace de volver tiene nombre accesible — `dish-form.component.spec.ts` (~8 min)
-5. [ ] Implementar las etiquetas, `id`s, `<h1>`, `fieldset/legend` de ingredientes y `aria-label` del enlace; indicar campos obligatorios — `dish-form.component.html` (~8 min)
-6. [ ] Tests de controles semánticos: Guardar es `button[type=submit]`, Añadir y Quitar son `button[type=button]` con nombre accesible («Quitar Tomate»), Cancelar es un enlace; Enter en el campo cantidad añade el ingrediente sin enviar el formulario; Guardar se deshabilita mientras `loading` — `dish-form.component.spec.ts` (~8 min)
-7. [ ] Implementar `<form (ngSubmit)>`, botones reales y `onIngredientEnter()` — `dish-form.component.ts` y `.html` (~8 min)
-8. [ ] Tests de errores en envío: enviar vacío no llama a `DishStore.create` y muestra un resumen `role="alert"` con 2 errores; los campos inválidos tienen `aria-invalid="true"` y `aria-describedby` apuntando al mensaje; el foco pasa al resumen; pulsar un enlace del resumen enfoca el campo; al corregir y reenviar se llama a `create` — `dish-form.component.spec.ts` (~10 min)
-9. [ ] Implementar señales de errores, `onSubmit()` con validación, foco al resumen y `focusField()` — `dish-form.component.ts` y `.html` (~10 min)
-10. [ ] Tests de ingredientes: añadir muestra el chip y vacía el selector; los errores de ingrediente (sin elegir, cantidad ≤ 0, duplicado) se muestran con `aria-describedby`; la región `aria-live` anuncia altas y bajas; tras quitar, el foco va al selector de ingrediente — `dish-form.component.spec.ts` (~10 min)
-11. [ ] Implementar `addIngredient()`/`removeIngredient()` con mensajes y gestión del foco — `dish-form.component.ts` y `.html` (~8 min)
-12. [ ] Estilos accesibles: `:focus-visible` global, no suprimir el outline de `button`, `sr-only`, estilos de error y de fieldset, placeholders e iconos con contraste ≥ 4.5:1 (sin test unitario: jsdom no calcula contraste ni foco visual; se cubre con axe y vídeo) — `styles.css` y `dish-form.component.css` (~8 min)
-13. [ ] Instalar y configurar Playwright (`@playwright/test`, `@axe-core/playwright`), `playwright.config.ts` con `webServer` para API y web-admin, `outputDir` y scripts `test:e2e`; helper de login (sin test unitario) — `e2e/playwright.config.ts` (~10 min)
-14. [ ] Test e2e axe: formulario nuevo, con errores visibles y en edición sin violaciones WCAG 2.x A/AA (`wcag2a`, `wcag2aa`, `wcag22aa`) — `e2e/dish-form.a11y.spec.ts` (~8 min)
-15. [ ] Test e2e solo teclado con vídeo: login, entrar a Nuevo plato, enviar incompleto y ver errores, modificar datos, añadir/quitar ingredientes, guardar y ver el plato en la lista; copiar el vídeo a `e2e-videos/dish-form-keyboard.webm` — `e2e/dish-form.keyboard.spec.ts` (~10 min)
-16. [ ] Limpieza y documentación: borrar `scripts/record-dish-form-a11y.mjs` y `scripts/videos/`, actualizar `.gitignore` y `CLAUDE.md` — `CLAUDE.md` (~5 min)
+1. [x] Configurar Vitest en `web-admin`: target `test` en `angular.json`, script `test`, instalar `vitest` y `jsdom`; añadir un spec trivial del componente que renderice el formulario para comprobar que el runner funciona — `packages/web-admin/angular.json` (~8 min)
+2. [x] Tests de validación: nombre vacío/solo espacios → error; precio vacío, 0 o negativo → error; valores válidos → sin errores; ingrediente sin seleccionar, cantidad ≤ 0 o duplicado → error — `dish-form.validation.spec.ts` (~8 min)
+3. [x] Implementar `validateDish()` y `validateIngredient()` hasta pasar los tests de la tarea 2 — `dish-form.validation.ts` (~8 min)
+4. [x] Tests de etiquetas: cada campo se localiza con `getByLabel` (nombre, precio, categoría, disponible, descripción, ingrediente, cantidad); el título es un `<h1>`; el enlace de volver tiene nombre accesible — `dish-form.component.spec.ts` (~8 min)
+5. [x] Implementar las etiquetas, `id`s, `<h1>`, `fieldset/legend` de ingredientes y `aria-label` del enlace; indicar campos obligatorios — `dish-form.component.html` (~8 min)
+6. [x] Tests de controles semánticos: Guardar es `button[type=submit]`, Añadir y Quitar son `button[type=button]` con nombre accesible («Quitar Tomate»), Cancelar es un enlace; Enter en el campo cantidad añade el ingrediente sin enviar el formulario; Guardar se deshabilita mientras `loading` — `dish-form.component.spec.ts` (~8 min)
+7. [x] Implementar `<form (ngSubmit)>`, botones reales y `onIngredientEnter()` — `dish-form.component.ts` y `.html` (~8 min)
+8. [x] Tests de errores en envío: enviar vacío no llama a `DishStore.create` y muestra un resumen `role="alert"` con 2 errores; los campos inválidos tienen `aria-invalid="true"` y `aria-describedby` apuntando al mensaje; el foco pasa al resumen; pulsar un enlace del resumen enfoca el campo; al corregir y reenviar se llama a `create` — `dish-form.component.spec.ts` (~10 min)
+9. [x] Implementar señales de errores, `onSubmit()` con validación, foco al resumen y `focusField()` — `dish-form.component.ts` y `.html` (~10 min)
+10. [x] Tests de ingredientes: añadir muestra el chip y vacía el selector; los errores de ingrediente (sin elegir, cantidad ≤ 0, duplicado) se muestran con `aria-describedby`; la región `aria-live` anuncia altas y bajas; tras quitar, el foco va al selector de ingrediente — `dish-form.component.spec.ts` (~10 min)
+11. [x] Implementar `addIngredient()`/`removeIngredient()` con mensajes y gestión del foco — `dish-form.component.ts` y `.html` (~8 min)
+12. [x] Estilos accesibles: `:focus-visible` global, no suprimir el outline de `button`, `sr-only`, estilos de error y de fieldset, placeholders e iconos con contraste ≥ 4.5:1 (sin test unitario: jsdom no calcula contraste ni foco visual; se cubre con axe y vídeo) — `styles.css` y `dish-form.component.css` (~8 min)
+13. [x] Instalar y configurar Playwright (`@playwright/test`, `@axe-core/playwright`), `playwright.config.ts` con `webServer` para API y web-admin, `outputDir` y scripts `test:e2e`; helper de login (sin test unitario) — `e2e/playwright.config.ts` (~10 min)
+14. [x] Test e2e axe: formulario nuevo, con errores visibles y en edición sin violaciones WCAG 2.x A/AA (`wcag2a`, `wcag2aa`, `wcag22aa`) — `e2e/dish-form.a11y.spec.ts` (~8 min)
+15. [x] Test e2e solo teclado con vídeo: login, entrar a Nuevo plato, enviar incompleto y ver errores, modificar datos, añadir/quitar ingredientes, guardar y ver el plato en la lista; copiar el vídeo a `e2e-videos/dish-form-keyboard.webm` — `e2e/dish-form.keyboard.spec.ts` (~10 min)
+16. [x] Limpieza y documentación: borrar `scripts/record-dish-form-a11y.mjs` y `scripts/videos/`, actualizar `.gitignore` y `CLAUDE.md` — `CLAUDE.md` (~5 min)
 
 ## Criterios de aceptación
 
 El trabajo se da por hecho cuando se cumplen todos estos puntos:
 
-- [ ] `npm run test -w @resttek/web-admin` ejecuta los tests unitarios con Vitest y todos pasan.
-- [ ] `npm test` (API) sigue pasando sin cambios.
-- [ ] `npm run build -w @resttek/web-admin` compila sin errores.
-- [ ] `npm run test:e2e` pasa, incluido el test de axe sin violaciones WCAG 2.2 AA en el formulario (vacío, con errores y en edición).
-- [ ] Existe `e2e-videos/dish-form-keyboard.webm` generado por Playwright. En él, todo el recorrido (tras abrir la app) se hace solo con teclado: modifica datos, añade y quita ingredientes, envía incompleto mostrando errores, crea bien el plato y aparece en la lista.
-- [ ] El test e2e no usa `click()` en el flujo del vídeo (se comprueba con `grep -n "click(" e2e/dish-form.keyboard.spec.ts`, sin resultados).
-- [ ] Todos los campos tienen etiqueta asociada, los errores se anuncian (`role="alert"`, `aria-invalid`, `aria-describedby`) y el foco es visible en todos los controles.
-- [ ] No quedan `div` con `(click)` en `dish-form.component.html` (`grep -n "div.*(click)"` sin resultados).
+- [x] `npm run test -w @resttek/web-admin` ejecuta los tests unitarios con Vitest y todos pasan.
+- [x] `npm test` (API) sigue pasando sin cambios.
+- [x] `npm run build -w @resttek/web-admin` compila sin errores.
+- [x] `npm run test:e2e` pasa, incluido el test de axe sin violaciones WCAG 2.2 AA en el formulario (vacío, con errores y en edición).
+- [x] Existe `e2e-videos/dish-form-keyboard.webm` generado por Playwright. En él, todo el recorrido (tras abrir la app) se hace solo con teclado: modifica datos, añade y quita ingredientes, envía incompleto mostrando errores, crea bien el plato y aparece en la lista.
+- [x] El test e2e no usa `click()` en el flujo del vídeo (se comprueba con `grep -n "click(" e2e/dish-form.keyboard.spec.ts`, sin resultados).
+- [x] Todos los campos tienen etiqueta asociada, los errores se anuncian (`role="alert"`, `aria-invalid`, `aria-describedby`) y el foco es visible en todos los controles.
+- [x] No quedan `div` con `(click)` en `dish-form.component.html` (`grep -n "div.*(click)"` sin resultados).
 
 ## Decisiones y dudas
 

@@ -74,14 +74,14 @@ Cada tarea de implementación empieza por los tests unitarios (rojo) y termina c
 
 El trabajo se da por hecho cuando se cumplen todos estos puntos:
 
-- [ ] `npm run test -w @resttek/web-admin` ejecuta los tests unitarios con Vitest y todos pasan.
-- [ ] `npm test` (API) sigue pasando sin cambios.
-- [ ] `npm run build -w @resttek/web-admin` compila sin errores.
-- [ ] `npm run test:e2e` pasa, incluido el test de axe sin violaciones WCAG 2.2 AA en el formulario (vacío, con errores y en edición).
-- [ ] Existe `e2e-videos/dish-form-keyboard.webm` generado por Playwright. En él, todo el recorrido (tras abrir la app) se hace solo con teclado: modifica datos, añade y quita ingredientes, envía incompleto mostrando errores, crea bien el plato y aparece en la lista.
-- [ ] El test e2e no usa `click()` en el flujo del vídeo (se comprueba con `grep -n "click(" e2e/dish-form.keyboard.spec.ts`, sin resultados).
-- [ ] Todos los campos tienen etiqueta asociada, los errores se anuncian (`role="alert"`, `aria-invalid`, `aria-describedby`) y el foco es visible en todos los controles.
-- [ ] No quedan `div` con `(click)` en `dish-form.component.html` (`grep -n "div.*(click)"` sin resultados).
+- [x] `npm run test -w @resttek/web-admin` ejecuta los tests unitarios con Vitest y todos pasan.
+- [x] `npm test` (API) sigue pasando sin cambios.
+- [x] `npm run build -w @resttek/web-admin` compila sin errores.
+- [x] `npm run test:e2e` pasa, incluido el test de axe sin violaciones WCAG 2.2 AA en el formulario (vacío, con errores y en edición).
+- [x] Existe `e2e-videos/dish-form-keyboard.webm` generado por Playwright. En él, todo el recorrido (tras abrir la app) se hace solo con teclado: modifica datos, añade y quita ingredientes, envía incompleto mostrando errores, crea bien el plato y aparece en la lista.
+- [x] El test e2e no usa `click()` en el flujo del vídeo (se comprueba con `grep -n "click(" e2e/dish-form.keyboard.spec.ts`, sin resultados).
+- [x] Todos los campos tienen etiqueta asociada, los errores se anuncian (`role="alert"`, `aria-invalid`, `aria-describedby`) y el foco es visible en todos los controles.
+- [x] No quedan `div` con `(click)` en `dish-form.component.html` (`grep -n "div.*(click)"` sin resultados).
 
 ## Decisiones y dudas
 

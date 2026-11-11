@@ -1,0 +1,139 @@
+<div class="fade-in">
+  <div class="page-header">
+    <div class="header-back">
+      <a [routerLink]="listUrl" class="back-link" aria-label="Volver a la lista de platos">
+        <lucide-icon name="chevron-left" [size]="18" aria-hidden="true"></lucide-icon>
+      </a>
+      <h1 id="form-title" class="form-title">{{ pageTitle }}</h1>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alert-error" role="alert">{{ error() }}</div>
+  }
+
+  <form class="card form-card" novalidate (ngSubmit)="onSubmit()" aria-labelledby="form-title">
+    @if (submitted() && errorList().length > 0) {
+      <div #errorSummary class="alert-error error-summary" role="alert" tabindex="-1" aria-labelledby="error-summary-title">
+        <p id="error-summary-title" class="error-summary-title">
+          Hay {{ errorList().length }} {{ errorList().length === 1 ? 'error' : 'errores' }} en el formulario
+        </p>
+        <ul>
+          @for (e of errorList(); track e.field) {
+            <li><a href="#{{ e.field }}" (click)="focusField($event, e.field)">{{ e.message }}</a></li>
+          }
+        </ul>
+      </div>
+    }
+
+    <p class="required-hint">Los campos marcados con <span aria-hidden="true">*</span><span class="sr-only">asterisco</span> son obligatorios.</p>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="dish-name">Nombre del plato <span class="required" aria-hidden="true">*</span></label>
+        <input id="dish-name" type="text" class="form-control" [(ngModel)]="form.name" name="name"
+               placeholder="Ensalada César" required aria-required="true" autocomplete="off"
+               [attr.aria-invalid]="errors().name ? 'true' : null"
+               [attr.aria-describedby]="errors().name ? 'dish-name-error' : null" />
+        @if (errors().name) {
+          <p id="dish-name-error" class="field-error">{{ errors().name }}</p>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="dish-price">Precio (€) <span class="required" aria-hidden="true">*</span></label>
+        <input id="dish-price" type="number" class="form-control" [(ngModel)]="form.price" name="price"
+               min="0" step="0.01" inputmode="decimal" required aria-required="true"
+               [attr.aria-invalid]="errors().price ? 'true' : null"
+               [attr.aria-describedby]="errors().price ? 'dish-price-error' : null" />
+        @if (errors().price) {
+          <p id="dish-price-error" class="field-error">{{ errors().price }}</p>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="dish-category">Categoría</label>
+        <select id="dish-category" class="form-control" [(ngModel)]="form.category" name="category">
+          @for (c of categories; track c) {
+            <option [value]="c">{{ getCategoryLabel(c) }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="dish-available">Disponible</label>
+        <select id="dish-available" class="form-control" [(ngModel)]="form.available" name="available">
+          <option [ngValue]="true">Sí</option>
+          <option [ngValue]="false">No</option>
+        </select>
+      </div>
+
+      <div class="form-group form-full">
+        <label for="dish-description">Descripción (opcional)</label>
+        <textarea id="dish-description" class="form-control" [(ngModel)]="form.description" name="description" rows="3"
+                  placeholder="Una deliciosa ensalada con..."></textarea>
+      </div>
+    </div>
+
+    <fieldset class="ingredients-section">
+      <legend>Ingredientes del plato</legend>
+
+      @if (form.ingredients.length > 0) {
+        <ul class="ingredient-chips" aria-label="Ingredientes añadidos">
+          @for (ing of form.ingredients; track ing.ingredientId) {
+            <li class="ingredient-chip">
+              <span>{{ getIngredientName(ing.ingredientId) }} — {{ ing.quantity }}</span>
+              <button type="button" class="chip-remove" (click)="removeIngredient(ing.ingredientId)"
+                      [attr.aria-label]="'Quitar ' + getIngredientName(ing.ingredientId)">
+                <lucide-icon name="trash-2" [size]="14" aria-hidden="true"></lucide-icon>
+              </button>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="ingredients-empty">Aún no has añadido ingredientes.</p>
+      }
+
+      <div class="add-ingredient-row">
+        <div class="form-group ingredient-select">
+          <label for="new-ingredient">Ingrediente</label>
+          <select id="new-ingredient" class="form-control" [(ngModel)]="newIngredientId" name="newIngredientId"
+                  (keydown.enter)="onIngredientEnter($event)"
+                  [attr.aria-invalid]="ingredientError() ? 'true' : null"
+                  [attr.aria-describedby]="ingredientError() ? 'ingredient-error' : null">
+            <option value="">Seleccionar ingrediente</option>
+            @for (i of ingredientStore.ingredients(); track i.id) {
+              <option [value]="i.id">{{ i.name }} ({{ i.unit }})</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="new-ingredient-qty">Cantidad</label>
+          <input id="new-ingredient-qty" type="number" class="form-control qty-input" [(ngModel)]="newIngredientQty"
+                 name="newIngredientQty" min="0" step="any" (keydown.enter)="onIngredientEnter($event)"
+                 [attr.aria-invalid]="ingredientError() ? 'true' : null"
+                 [attr.aria-describedby]="ingredientError() ? 'ingredient-error' : null" />
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm add-btn" (click)="addIngredient()">
+          <lucide-icon name="plus" [size]="14" aria-hidden="true"></lucide-icon>
+          Añadir ingrediente
+        </button>
+      </div>
+      @if (ingredientError()) {
+        <p id="ingredient-error" class="field-error">{{ ingredientError() }}</p>
+      }
+      <p class="sr-only" role="status" aria-live="polite">{{ liveMessage() }}</p>
+    </fieldset>
+
+    <div class="form-actions">
+      <a class="btn btn-secondary" [routerLink]="listUrl">Cancelar</a>
+      <button type="submit" class="btn btn-primary" [disabled]="loading()">
+        @if (loading()) {
+          Guardando...
+        } @else {
+          Guardar
+        }
+      </button>
+    </div>
+  </form>
+</div>

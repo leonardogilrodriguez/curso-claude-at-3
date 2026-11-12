@@ -104,7 +104,7 @@ Cada tarea de la API empieza por sus tests (TDD, `npm test`). Los frontends no t
 25. [x] Guardar `tableId` en `CartStore` (se vacía al cambiar de restaurante) y enviarlo en `OrderService.createOrder` — `packages/web-clientes/src/app/core/store/cart.store.ts` (~8 min)
 26. [x] Componente de selección: campo de número de personas, lista de mesas disponibles y botón Continuar deshabilitado hasta elegir una — `packages/web-clientes/src/app/features/tables/table-select.component.ts` (~10 min)
 27. [x] Al continuar: llamar a «ocupar», guardar la mesa y navegar a la carta; si la mesa ya no está libre, mostrar error y recargar la lista — `packages/web-clientes/src/app/features/tables/table-select.component.ts` (~8 min)
-28. [ ] Ruta `restaurants/:id/table`, enlazar desde la lista de restaurantes y redirigir desde la carta si no hay mesa — `packages/web-clientes/src/app/app.routes.ts` (~8 min)
+28. [x] Ruta `restaurants/:id/table`, enlazar desde la lista de restaurantes y redirigir desde la carta si no hay mesa — `packages/web-clientes/src/app/app.routes.ts` (~8 min)
 
 ### Verificación final
 

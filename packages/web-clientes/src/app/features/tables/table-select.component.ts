@@ -1,7 +1,8 @@
 import { Component, inject, OnInit, signal } from '@angular/core'
-import { ActivatedRoute, RouterLink } from '@angular/router'
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { TableService } from '../../core/services/table.service'
 import { Table } from '../../core/models/table.model'
+import { CartStore } from '../../core/store/cart.store'
 
 @Component({
   selector: 'app-table-select',
@@ -51,7 +52,8 @@ import { Table } from '../../core/models/table.model'
       }
 
       <div class="actions">
-        <button type="button" class="btn btn-primary" [disabled]="!selectedId()">
+        <button type="button" class="btn btn-primary" [disabled]="!selectedId() || occupying()"
+                (click)="continue()">
           Continuar
         </button>
       </div>
@@ -75,13 +77,16 @@ import { Table } from '../../core/models/table.model'
 })
 export class TableSelectComponent implements OnInit {
   private readonly route = inject(ActivatedRoute)
+  private readonly router = inject(Router)
   private readonly tableService = inject(TableService)
+  private readonly cartStore = inject(CartStore)
 
   protected restaurantId = ''
   readonly people = signal<number | null>(2)
   readonly tables = signal<Table[]>([])
   readonly selectedId = signal<string | null>(null)
   readonly loading = signal(false)
+  readonly occupying = signal(false)
   readonly error = signal<string | null>(null)
 
   ngOnInit(): void {
@@ -99,6 +104,37 @@ export class TableSelectComponent implements OnInit {
 
   select(table: Table): void {
     this.selectedId.set(table.id)
+  }
+
+  continue(): void {
+    const table = this.tables().find(t => t.id === this.selectedId())
+    if (!table || this.occupying()) return
+    this.occupying.set(true)
+    this.error.set(null)
+    this.tableService.occupy(this.restaurantId, table.id).subscribe({
+      next: (occupied) => {
+        this.cartStore.setTable({
+          id: occupied.id,
+          number: occupied.number,
+          restaurantId: this.restaurantId
+        })
+        this.occupying.set(false)
+        this.router.navigate(['/restaurants', this.restaurantId])
+      },
+      error: (err) => {
+        this.occupying.set(false)
+        this.selectedId.set(null)
+        if (err?.status === 409) {
+          this.error.set('La mesa ya no está disponible. Elige otra de la lista actualizada.')
+          this.loadTables()
+        } else if (err?.status === 404) {
+          this.error.set('La mesa no existe. Elige otra de la lista actualizada.')
+          this.loadTables()
+        } else {
+          this.error.set('No se pudo ocupar la mesa. Inténtalo de nuevo.')
+        }
+      }
+    })
   }
 
   protected loadTables(): void {

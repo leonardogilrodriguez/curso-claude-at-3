@@ -67,6 +67,26 @@ export class TableController {
         }
     }
 
+    getAvailable = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const raw = req.query.people
+            const people = typeof raw === 'string' && raw.trim() !== '' ? Number(raw) : Number.NaN
+            const tables = await this.tableService.findAvailable(req.params.restaurantId as string, people)
+            res.status(200).json(tables.map(t => this.toJSON(t)))
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    occupy = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const table = await this.tableService.occupy(req.params.restaurantId as string, req.params.tableId as string)
+            res.status(200).json(this.toJSON(table))
+        } catch (error) {
+            next(error)
+        }
+    }
+
     private toInput(body: any): TableInput {
         return {
             number: body?.number,

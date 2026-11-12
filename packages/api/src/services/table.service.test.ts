@@ -145,3 +145,44 @@ describe('TableService read, update and delete', () => {
         await expect(service.delete('rest-2', tableId)).rejects.toThrow(TableNotFoundError)
     })
 })
+
+describe('TableService.changeStatus', () => {
+    let service: TableService
+    let tableId: string
+
+    beforeEach(async () => {
+        ({ service } = await buildService())
+        tableId = (await service.create('rest-1', { number: '7', capacity: 4 })).id
+    })
+
+    it('allows every transition between libre, ocupada and reservada', async () => {
+        const transitions = ['ocupada', 'libre', 'reservada', 'ocupada', 'reservada', 'libre'] as const
+        for (const status of transitions) {
+            const table = await service.changeStatus('rest-1', tableId, status)
+            expect(table.status).toBe(status)
+            expect((await service.findById('rest-1', tableId)).status).toBe(status)
+        }
+    })
+
+    it('accepts the same status and normalizes the value', async () => {
+        expect((await service.changeStatus('rest-1', tableId, ' LIBRE ')).status).toBe('libre')
+    })
+
+    it('updates updatedAt', async () => {
+        const before = await service.findById('rest-1', tableId)
+        await new Promise(resolve => setTimeout(resolve, 5))
+        const after = await service.changeStatus('rest-1', tableId, 'ocupada')
+        expect(after.updatedAt > before.updatedAt).toBe(true)
+        expect(after.createdAt).toBe(before.createdAt)
+    })
+
+    it('rejects an invalid status', async () => {
+        await expect(service.changeStatus('rest-1', tableId, 'cerrada')).rejects.toThrow(InvalidTableStatusError)
+        await expect(service.changeStatus('rest-1', tableId, undefined as unknown as string)).rejects.toThrow(InvalidTableStatusError)
+    })
+
+    it('throws TableNotFoundError for a missing table or a table of another restaurant', async () => {
+        await expect(service.changeStatus('rest-1', 'nope', 'libre')).rejects.toThrow(TableNotFoundError)
+        await expect(service.changeStatus('rest-2', tableId, 'libre')).rejects.toThrow(TableNotFoundError)
+    })
+})

@@ -68,7 +68,7 @@ Cada tarea de la API empieza por sus tests (TDD, `npm test`). Los frontends no t
 
 ### API (con TDD)
 
-1. [ ] Crear el modelo `Table`, los estados `libre | ocupada | reservada` y `normalizeTableStatus()`, con sus tests (estado inválido, mayúsculas/espacios) — `packages/api/src/models/table.model.ts` (~8 min)
+1. [x] Crear el modelo `Table`, los estados `libre | ocupada | reservada` y `normalizeTableStatus()`, con sus tests (estado inválido, mayúsculas/espacios) — `packages/api/src/models/table.model.ts` (~8 min)
 2. [ ] Añadir los errores de dominio de mesas y registrar `TableNotFoundError` en `NOT_FOUND_ERRORS`; test del mapeo a 404 — `packages/api/src/errors/DomainErrors.ts` (~6 min)
 3. [ ] Crear la tabla `tables` (`id`, `restaurant_id` FK, `number`, `description`, `capacity`, `status`, `created_at`, `updated_at`, `UNIQUE(restaurant_id, number)`) y su test de migración — `packages/api/src/config/database.ts` (~8 min)
 4. [ ] Tests del repositorio (guardar, buscar por id, listar por restaurante, actualizar, borrar, número duplicado) — `packages/api/src/repositories/table.repository.test.ts` (~10 min)

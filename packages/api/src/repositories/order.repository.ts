@@ -8,6 +8,7 @@ interface OrderRow {
     table_id: string | null
     client_id: string | null
     created_at: string
+    table_number: string | null
 }
 
 interface OrderRowWithRestaurant extends OrderRow {
@@ -29,6 +30,10 @@ interface OrderItemWithDishRow extends OrderItemRow {
     dish_price: number
     dish_category: string
 }
+
+// orders.table_id has no FK: the join also checks the restaurant and yields null for unknown tables.
+const TABLE_NUMBER_COLUMN = 't.number as table_number'
+const TABLE_JOIN = 'LEFT JOIN tables t ON t.id = o.table_id AND t.restaurant_id = o.restaurant_id'
 
 export interface OrderRepository {
     create(order: Order): Promise<void>
@@ -57,9 +62,10 @@ export class SqliteOrderRepository implements OrderRepository {
 
     async findById(id: string): Promise<Order | null> {
         const orderRow = await this.db.get<OrderRowWithRestaurant>(
-            `SELECT o.*, r.name as restaurant_name, r.logo_url as restaurant_logo_url
+            `SELECT o.*, r.name as restaurant_name, r.logo_url as restaurant_logo_url, ${TABLE_NUMBER_COLUMN}
              FROM orders o
              LEFT JOIN restaurants r ON o.restaurant_id = r.id
+             ${TABLE_JOIN}
              WHERE o.id = ?`,
             [id]
         )
@@ -71,6 +77,7 @@ export class SqliteOrderRepository implements OrderRepository {
             id: orderRow.id,
             restaurantId: orderRow.restaurant_id,
             tableId: orderRow.table_id,
+            tableNumber: orderRow.table_number ?? null,
             clientId: orderRow.client_id,
             createdAt: new Date(orderRow.created_at),
             items,
@@ -88,9 +95,10 @@ export class SqliteOrderRepository implements OrderRepository {
 
     async findActiveByRestaurant(restaurantId: string): Promise<Order[]> {
         const query = `
-            SELECT DISTINCT o.*
+            SELECT DISTINCT o.*, ${TABLE_NUMBER_COLUMN}
             FROM orders o
             JOIN order_items oi ON o.id = oi.order_id
+            ${TABLE_JOIN}
             WHERE o.restaurant_id = ? AND oi.status != 'entregado'
             ORDER BY o.created_at ASC
         `
@@ -103,6 +111,7 @@ export class SqliteOrderRepository implements OrderRepository {
                 id: row.id,
                 restaurantId: row.restaurant_id,
                 tableId: row.table_id,
+                tableNumber: row.table_number ?? null,
                 clientId: row.client_id,
                 createdAt: new Date(row.created_at),
                 items
@@ -114,9 +123,10 @@ export class SqliteOrderRepository implements OrderRepository {
 
     async findByClientId(clientId: string): Promise<Order[]> {
         const orderRows = await this.db.all<OrderRowWithRestaurant>(
-            `SELECT o.*, r.name as restaurant_name, r.logo_url as restaurant_logo_url
+            `SELECT o.*, r.name as restaurant_name, r.logo_url as restaurant_logo_url, ${TABLE_NUMBER_COLUMN}
              FROM orders o
              LEFT JOIN restaurants r ON o.restaurant_id = r.id
+             ${TABLE_JOIN}
              WHERE o.client_id = ?
              ORDER BY o.created_at DESC`,
             [clientId]
@@ -129,6 +139,7 @@ export class SqliteOrderRepository implements OrderRepository {
                 id: row.id,
                 restaurantId: row.restaurant_id,
                 tableId: row.table_id,
+                tableNumber: row.table_number ?? null,
                 clientId: row.client_id,
                 createdAt: new Date(row.created_at),
                 items,

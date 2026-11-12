@@ -103,8 +103,8 @@ export class CartStore {
     this._items.set(items)
   }
 
+  /** Vacía los items; conserva la mesa para poder hacer más pedidos en ella. */
   clear(): void {
-    this._table.set(null)
     this._items.set([])
     this._restaurantId.set(null)
   }

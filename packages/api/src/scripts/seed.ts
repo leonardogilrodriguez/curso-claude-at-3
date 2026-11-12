@@ -71,6 +71,36 @@ const seed = async () => {
             }
         }
 
+        // Fixed ids (rest-1-table-N) keep the seed idempotent with INSERT OR IGNORE.
+        const tablesByRestaurant: Record<string, { number: string, description: string | null, capacity: number, status: string }[]> = {
+            'rest-1': [
+                { number: '1', description: 'Ventana', capacity: 2, status: 'libre' },
+                { number: '2', description: 'Ventana', capacity: 2, status: 'libre' },
+                { number: '3', description: 'Salón', capacity: 4, status: 'libre' },
+                { number: '4', description: 'Salón', capacity: 4, status: 'reservada' },
+                { number: '5', description: 'Salón', capacity: 6, status: 'ocupada' },
+                { number: '6', description: 'Terraza', capacity: 8, status: 'libre' }
+            ],
+            'rest-2': [
+                { number: '1', description: null, capacity: 2, status: 'libre' },
+                { number: '2', description: 'Terraza', capacity: 4, status: 'libre' },
+                { number: '3', description: null, capacity: 4, status: 'ocupada' },
+                { number: '4', description: 'Reservado', capacity: 6, status: 'reservada' }
+            ]
+        }
+
+        for (const [restaurantId, tables] of Object.entries(tablesByRestaurant)) {
+            for (const table of tables) {
+                const now = new Date().toISOString()
+                await dbConfig.run(`
+                    INSERT OR IGNORE INTO tables (id, restaurant_id, number, description, capacity, status, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                `, [`${restaurantId}-table-${table.number}`, restaurantId, table.number, table.description, table.capacity, table.status, now, now])
+            }
+        }
+
+        console.log('Tables created: 6 in rest-1, 4 in rest-2')
+
         const ingredientsRest1 = [
             { id: randomUUID(), name: 'Tomate', unit: 'kg' },
             { id: randomUUID(), name: 'Queso mozzarella', unit: 'kg' },
@@ -162,7 +192,7 @@ const seed = async () => {
         await dbConfig.run(`
             INSERT OR IGNORE INTO orders (id, restaurant_id, table_id, client_id, created_at)
             VALUES (?, ?, ?, ?, ?)
-        `, [order1Id, 'rest-1', '5', null, new Date().toISOString()])
+        `, [order1Id, 'rest-1', 'rest-1-table-5', null, new Date().toISOString()])
 
         for (let i = 0; i < 2; i++) {
             await dbConfig.run(`

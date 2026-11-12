@@ -81,7 +81,7 @@ Cada tarea de la API empieza por sus tests (TDD, `npm test`). Los frontends no t
 11. [x] Controlador y rutas admin/empleados: CRUD solo `admin` (y `manager` de su restaurante, si se decide), `GET` y `PATCH /:id/status` para `admin`, `manager`, `camarero`; montarlas en `app.ts`; tests HTTP con supertest si ya está disponible, si no, comprobación con `curl` — `packages/api/src/routes/table.routes.ts` (~10 min)
 12. [x] Rutas para clientes: `GET /public/restaurants/:restaurantId/tables/available?people=N` y `POST …/tables/:id/occupy` (autenticado, rol `cliente`) — `packages/api/src/routes/table.public.routes.ts` (~8 min)
 13. [x] Tests de `OrderService.create` con `tableId`: mesa inexistente, de otro restaurante o no ocupada → error; sin `tableId` se sigue aceptando; e implementación — `packages/api/src/services/order.service.ts` (~10 min)
-14. [ ] Añadir mesas al seed (varias capacidades y estados por restaurante) y actualizar `docs/dominio/modelo-datos.md` — `packages/api/src/scripts/seed.ts` (~8 min)
+14. [x] Añadir mesas al seed (varias capacidades y estados por restaurante) y actualizar `docs/dominio/modelo-datos.md` — `packages/api/src/scripts/seed.ts` (~8 min)
 
 ### web-admin
 

@@ -85,7 +85,7 @@ Cada tarea de la API empieza por sus tests (TDD, `npm test`). Los frontends no t
 
 ### web-admin
 
-15. [ ] Modelo `Table`, `CreateTableDto` y `TableService` HTTP — `packages/web-admin/src/app/features/tables/services/table.service.ts` (~8 min)
+15. [x] Modelo `Table`, `CreateTableDto` y `TableService` HTTP — `packages/web-admin/src/app/features/tables/services/table.service.ts` (~8 min)
 16. [ ] `TableStore` con señales (cargar por restaurante ignorando respuestas obsoletas, crear, actualizar, borrar) — `packages/web-admin/src/app/features/tables/store/table.store.ts` (~8 min)
 17. [ ] Página de lista de mesas con estado como etiqueta, editar y borrar — `packages/web-admin/src/app/features/tables/pages/table-list/table-list.component.ts` (~10 min)
 18. [ ] Formulario de mesa (número, descripción, capacidad, estado) con validación y etiquetas accesibles — `packages/web-admin/src/app/features/tables/pages/table-form/table-form.component.ts` (~10 min)

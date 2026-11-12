@@ -1,0 +1,178 @@
+{
+  "common": {
+    "appName": "RestTek",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "loading": "Cargando...",
+    "name": "Nombre",
+    "email": "Email",
+    "address": "Dirección",
+    "phone": "Teléfono",
+    "role": "Rol",
+    "available": "Disponible",
+    "currentStock": "Stock actual",
+    "dashboard": "Dashboard",
+    "restaurants": "Restaurantes",
+    "dishes": "Platos",
+    "ingredients": "Ingredientes",
+    "employees": "Empleados",
+    "newRestaurant": "Nuevo restaurante",
+    "newDish": "Nuevo plato",
+    "newIngredient": "Nuevo ingrediente",
+    "newEmployee": "Nuevo empleado",
+    "category": "Categoría"
+  },
+  "app": {
+    "description": "RestTek - Panel de gestión de restaurantes"
+  },
+  "shell": {
+    "myRestaurants": "Mis restaurantes",
+    "noRestaurants": "Sin restaurantes",
+    "settings": "Configuración"
+  },
+  "notFound": {
+    "message": "Página no encontrada",
+    "backHome": "Volver al inicio"
+  },
+  "dashboard": {
+    "welcome": "Bienvenido, {firstName}",
+    "subtitle": "Panel de gestión de RestTek",
+    "restaurantsDescription": "Gestiona los datos de tus restaurantes"
+  },
+  "restaurants": {
+    "errors": {
+      "loadList": "No se pudieron cargar los restaurantes.",
+      "loadOne": "No se pudo cargar el restaurante.",
+      "save": "Error al guardar el restaurante."
+    },
+    "list": {
+      "emptyState": "No hay restaurantes registrados",
+      "owner": "Propietario"
+    },
+    "form": {
+      "titleEdit": "Editar restaurante",
+      "nameLabel": "Nombre del restaurante",
+      "namePlaceholder": "La Trattoria",
+      "emailPlaceholder": "info@restaurante.com",
+      "addressPlaceholder": "Calle Mayor 10, Madrid",
+      "phonePlaceholder": "+34 612 345 678",
+      "ownerFirstNameLabel": "Nombre del propietario",
+      "ownerFirstNamePlaceholder": "Carlos",
+      "ownerLastNameLabel": "Apellido del propietario",
+      "ownerLastNamePlaceholder": "García",
+      "logoUrlLabel": "URL del logo (opcional)",
+      "logoUrlPlaceholder": "https://ejemplo.com/logo.png"
+    },
+    "dashboard": {
+      "subtitle": "Panel de gestión del restaurante",
+      "fallbackName": "Restaurante",
+      "dishesDescription": "Gestiona la carta del restaurante",
+      "ingredientsDescription": "Controla el inventario de ingredientes",
+      "employeesDescription": "Administra el equipo de trabajo"
+    }
+  },
+  "dishes": {
+    "errors": {
+      "loadList": "No se pudieron cargar los platos."
+    },
+    "list": {
+      "emptyState": "No hay platos para este restaurante",
+      "price": "Precio",
+      "confirmDelete": "¿Estás seguro de eliminar este plato?",
+      "deleteError": "Error al eliminar el plato.",
+      "toggleError": "Error al actualizar disponibilidad."
+    },
+    "categories": {
+      "entrante": "Entrante",
+      "principal": "Principal",
+      "postre": "Postre",
+      "bebida": "Bebida"
+    },
+    "form": {
+      "titleEdit": "Editar plato",
+      "backAriaLabel": "Volver a la lista de platos",
+      "errorSummarySingular": "Hay 1 error en el formulario",
+      "errorSummaryPlural": "Hay {count} errores en el formulario",
+      "requiredHint": "Los campos marcados con * son obligatorios.",
+      "requiredSrText": "asterisco",
+      "nameLabel": "Nombre del plato",
+      "namePlaceholder": "Ensalada César",
+      "priceLabel": "Precio (€)",
+      "yes": "Sí",
+      "no": "No",
+      "descriptionLabel": "Descripción (opcional)",
+      "descriptionPlaceholder": "Una deliciosa ensalada con...",
+      "ingredientsLegend": "Ingredientes del plato",
+      "addedIngredientsAriaLabel": "Ingredientes añadidos",
+      "removeIngredientAriaLabel": "Quitar {name}",
+      "ingredientsEmpty": "Aún no has añadido ingredientes.",
+      "ingredientLabel": "Ingrediente",
+      "selectIngredient": "Seleccionar ingrediente",
+      "quantityLabel": "Cantidad",
+      "addIngredient": "Añadir ingrediente",
+      "liveIngredientAdded": "Ingrediente añadido: {name}.",
+      "liveIngredientRemoved": "Ingrediente quitado: {name}.",
+      "loadError": "No se pudo cargar el plato.",
+      "saveError": "Error al guardar el plato."
+    },
+    "validation": {
+      "nameRequired": "El nombre del plato es obligatorio.",
+      "priceRequired": "El precio es obligatorio.",
+      "pricePositive": "El precio debe ser mayor que 0.",
+      "ingredientRequired": "Selecciona un ingrediente para añadirlo.",
+      "quantityPositive": "La cantidad debe ser mayor que 0.",
+      "ingredientDuplicate": "Ese ingrediente ya está en el plato."
+    }
+  },
+  "ingredients": {
+    "errors": {
+      "loadList": "No se pudieron cargar los ingredientes."
+    },
+    "list": {
+      "emptyState": "No hay ingredientes para este restaurante",
+      "unit": "Unidad",
+      "confirmDelete": "¿Estás seguro de eliminar este ingrediente?",
+      "deleteError": "Error al eliminar el ingrediente."
+    },
+    "form": {
+      "titleEdit": "Editar ingrediente",
+      "nameLabel": "Nombre del ingrediente",
+      "namePlaceholder": "Tomate",
+      "unitLabel": "Unidad de medida",
+      "loadError": "No se pudo cargar el ingrediente.",
+      "saveError": "Error al guardar el ingrediente."
+    }
+  },
+  "employees": {
+    "errors": {
+      "loadList": "No se pudieron cargar los empleados."
+    },
+    "list": {
+      "emptyState": "No hay empleados en este restaurante"
+    },
+    "form": {
+      "firstNamePlaceholder": "Juan",
+      "lastNameLabel": "Apellido",
+      "lastNamePlaceholder": "Pérez",
+      "emailPlaceholder": "juan@restaurante.com",
+      "passwordLabel": "Contraseña",
+      "submit": "Crear empleado",
+      "saveError": "Error al crear el empleado."
+    }
+  },
+  "shared": {
+    "login": {
+      "title": "RestTek",
+      "subtitle": "Accede a tu panel de gestión",
+      "logoAlt": "RestTek",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "tu@email.com",
+      "passwordLabel": "Contraseña",
+      "submit": "Iniciar sesión",
+      "submitting": "Accediendo...",
+      "invalidCredentials": "Credenciales inválidas. Inténtalo de nuevo."
+    }
+  }
+}

@@ -1,0 +1,81 @@
+<div class="fade-in">
+  <div class="page-header">
+    <div class="header-back">
+      <a [routerLink]="listUrl" class="back-link" aria-label="Volver a la lista de mesas">
+        <lucide-icon name="chevron-left" [size]="18" aria-hidden="true"></lucide-icon>
+      </a>
+      <h1 id="form-title" class="form-title">{{ pageTitle }}</h1>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alert-error" role="alert">{{ error() }}</div>
+  }
+
+  <form class="card form-card" novalidate (ngSubmit)="onSubmit()" aria-labelledby="form-title">
+    @if (submitted() && errorList().length > 0) {
+      <div #errorSummary class="alert-error error-summary" role="alert" tabindex="-1" aria-labelledby="error-summary-title">
+        <p id="error-summary-title" class="error-summary-title">
+          Hay {{ errorList().length }} {{ errorList().length === 1 ? 'error' : 'errores' }} en el formulario
+        </p>
+        <ul>
+          @for (e of errorList(); track e.field) {
+            <li><a href="#{{ e.field }}" (click)="focusField($event, e.field)">{{ e.message }}</a></li>
+          }
+        </ul>
+      </div>
+    }
+
+    <p class="required-hint">Los campos marcados con <span aria-hidden="true">*</span><span class="sr-only">asterisco</span> son obligatorios.</p>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="table-number">Número de la mesa <span class="required" aria-hidden="true">*</span></label>
+        <input id="table-number" type="text" class="form-control" [(ngModel)]="form.number" name="number"
+               placeholder="7" required aria-required="true" autocomplete="off"
+               [attr.aria-invalid]="errors().number ? 'true' : null"
+               [attr.aria-describedby]="errors().number ? 'table-number-error' : null" />
+        @if (errors().number) {
+          <p id="table-number-error" class="field-error">{{ errors().number }}</p>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="table-capacity">Capacidad <span class="required" aria-hidden="true">*</span></label>
+        <input id="table-capacity" type="number" class="form-control" [(ngModel)]="form.capacity" name="capacity"
+               min="1" step="1" inputmode="numeric" required aria-required="true"
+               [attr.aria-invalid]="errors().capacity ? 'true' : null"
+               [attr.aria-describedby]="errors().capacity ? 'table-capacity-error' : null" />
+        @if (errors().capacity) {
+          <p id="table-capacity-error" class="field-error">{{ errors().capacity }}</p>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="table-status">Estado</label>
+        <select id="table-status" class="form-control" [(ngModel)]="form.status" name="status">
+          @for (s of statuses; track s.value) {
+            <option [value]="s.value">{{ s.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group form-full">
+        <label for="table-description">Descripción (opcional)</label>
+        <textarea id="table-description" class="form-control" [(ngModel)]="form.description" name="description" rows="3"
+                  placeholder="Terraza, junto a la ventana..."></textarea>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <a class="btn btn-secondary" [routerLink]="listUrl">Cancelar</a>
+      <button type="submit" class="btn btn-primary" [disabled]="loading()">
+        @if (loading()) {
+          Guardando...
+        } @else {
+          Guardar
+        }
+      </button>
+    </div>
+  </form>
+</div>

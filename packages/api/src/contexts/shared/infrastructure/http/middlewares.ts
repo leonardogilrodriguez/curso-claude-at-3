@@ -39,3 +39,16 @@ export const authorize = (roles: string[]) => {
         next()
     }
 }
+
+// Employees (everyone except admin) can only act on the restaurant of their token.
+export const authorizeRestaurant = (req: AuthRequest, res: Response, next: NextFunction): void => {
+    if (req.user?.role === 'admin') {
+        next()
+        return
+    }
+    if (!req.user?.restaurantId || req.user.restaurantId !== req.params.restaurantId) {
+        res.status(403).json({ error: 'Forbidden: Restaurant not allowed' })
+        return
+    }
+    next()
+}

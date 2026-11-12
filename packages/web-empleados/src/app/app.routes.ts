@@ -1,7 +1,13 @@
-import { Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { Routes, Router, CanActivateFn } from '@angular/router';
 import { LoginComponent } from '@resttek/web-shared';
 import { ShellComponent } from './core/layout/shell.component';
-import { authGuard } from '@resttek/web-shared';
+import { authGuard, AuthStore } from '@resttek/web-shared';
+
+const mesasGuard: CanActivateFn = () => {
+  const role = inject(AuthStore).userRole();
+  return role === 'camarero' || role === 'manager' || inject(Router).createUrlTree(['/']);
+};
 
 export const routes: Routes = [
   {
@@ -29,6 +35,11 @@ export const routes: Routes = [
       {
         path: 'salon',
         loadComponent: () => import('./features/orders/pages/salon/salon.component').then(m => m.SalonComponent),
+      },
+      {
+        path: 'mesas',
+        loadComponent: () => import('./features/tables/pages/mesas/mesas.component').then(m => m.MesasComponent),
+        canActivate: [mesasGuard],
       }
     ]
   },

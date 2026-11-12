@@ -10,7 +10,8 @@ import {
     RestaurantNotFoundError,
     TableNotFoundError,
     TableOccupiedError,
-    InvalidPeopleCountError
+    InvalidPeopleCountError,
+    TableNotAvailableError
 } from '@errors/DomainErrors.js'
 
 export interface TableInput {
@@ -96,6 +97,16 @@ export class TableService {
         return tables
             .filter(t => t.status === 'libre' && t.capacity >= people)
             .sort((a, b) => a.capacity - b.capacity)
+    }
+
+    async occupy(restaurantId: string, tableId: string): Promise<Table> {
+        const table = await this.findById(restaurantId, tableId)
+        const updatedAt = new Date().toISOString()
+        const occupied = await this.tableRepository.occupy(tableId, updatedAt)
+        if (!occupied) {
+            throw new TableNotAvailableError()
+        }
+        return { ...table, status: 'ocupada', updatedAt }
     }
 
     async changeStatus(restaurantId: string, tableId: string, status: string): Promise<Table> {

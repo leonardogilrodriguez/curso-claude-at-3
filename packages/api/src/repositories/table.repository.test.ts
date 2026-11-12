@@ -92,3 +92,46 @@ describe('SqliteTableRepository (Integration)', () => {
         expect(await repo.findById('t10')).toBeNull()
     })
 })
+
+describe('SqliteTableRepository.occupy (Integration)', () => {
+    let db: Database
+    let repo: SqliteTableRepository
+
+    beforeAll(async () => {
+        process.env.NODE_ENV = 'test'
+        db = new Database()
+        await db.initialize()
+        repo = new SqliteTableRepository(db)
+        const now = new Date().toISOString()
+        await db.run(
+            'INSERT INTO restaurants (id, name, address, email, phone, owner_first_name, owner_last_name, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            ['r1', 'Restaurante', 'Calle Mayor 10', 'r1@resttek.com', '+34 612345678', 'Carlos', 'García', now, now]
+        )
+        await repo.save(buildTable({ id: 'free', number: '1' }))
+        await repo.save(buildTable({ id: 'race', number: '2' }))
+        await repo.save(buildTable({ id: 'reserved', number: '3', status: 'reservada' }))
+    })
+
+    afterAll(async () => {
+        await db.close()
+    })
+
+    it('marks a free table as occupied and returns true', async () => {
+        expect(await repo.occupy('free', '2030-01-01T00:00:00.000Z')).toBe(true)
+        expect(await repo.findById('free')).toMatchObject({ status: 'ocupada', updatedAt: '2030-01-01T00:00:00.000Z' })
+    })
+
+    it('returns false and changes nothing when the table is not free', async () => {
+        expect(await repo.occupy('free', '2031-01-01T00:00:00.000Z')).toBe(false)
+        expect((await repo.findById('free'))?.updatedAt).toBe('2030-01-01T00:00:00.000Z')
+        expect(await repo.occupy('reserved', '2031-01-01T00:00:00.000Z')).toBe(false)
+        expect((await repo.findById('reserved'))?.status).toBe('reservada')
+        expect(await repo.occupy('nope', '2031-01-01T00:00:00.000Z')).toBe(false)
+    })
+
+    it('lets only one of two simultaneous requests occupy the same table', async () => {
+        const now = new Date().toISOString()
+        const results = await Promise.all([repo.occupy('race', now), repo.occupy('race', now)])
+        expect(results.filter(Boolean)).toHaveLength(1)
+    })
+})

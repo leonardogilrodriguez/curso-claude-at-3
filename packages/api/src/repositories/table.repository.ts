@@ -19,6 +19,7 @@ export interface TableRepository {
     findByRestaurantId(restaurantId: string): Promise<Table[]>
     findByNumber(restaurantId: string, number: string): Promise<Table | null>
     save(table: Table): Promise<void>
+    occupy(id: string, updatedAt: string): Promise<boolean>
     delete(id: string): Promise<void>
 }
 
@@ -72,6 +73,15 @@ export class SqliteTableRepository implements TableRepository {
             }
             throw error
         }
+    }
+
+    // Conditional update: only one request can move a table from libre to ocupada.
+    async occupy(id: string, updatedAt: string): Promise<boolean> {
+        const result = await this.db.run(
+            "UPDATE tables SET status = 'ocupada', updated_at = ? WHERE id = ? AND status = 'libre'",
+            [updatedAt, id]
+        )
+        return result.changes === 1
     }
 
     async delete(id: string): Promise<void> {

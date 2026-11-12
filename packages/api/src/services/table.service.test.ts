@@ -10,7 +10,8 @@ import {
     RestaurantNotFoundError,
     TableNotFoundError,
     TableOccupiedError,
-    InvalidPeopleCountError
+    InvalidPeopleCountError,
+    TableNotAvailableError
 } from '@errors/DomainErrors.js'
 
 async function buildService() {
@@ -227,5 +228,41 @@ describe('TableService.findAvailable', () => {
         for (const people of [0, -1, 2.5, Number.NaN, undefined]) {
             await expect(service.findAvailable('rest-1', people as unknown as number)).rejects.toThrow(InvalidPeopleCountError)
         }
+    })
+})
+
+describe('TableService.occupy', () => {
+    let service: TableService
+    let tableRepository: MockTableRepository
+    let tableId: string
+
+    beforeEach(async () => {
+        ({ service, tableRepository } = await buildService())
+        tableId = (await service.create('rest-1', { number: '7', capacity: 4 })).id
+    })
+
+    it('turns a free table into an occupied one', async () => {
+        const table = await service.occupy('rest-1', tableId)
+        expect(table).toMatchObject({ id: tableId, status: 'ocupada' })
+        expect((await service.findById('rest-1', tableId)).status).toBe('ocupada')
+    })
+
+    it('throws TableNotAvailableError when the table is occupied or reserved', async () => {
+        await service.occupy('rest-1', tableId)
+        await expect(service.occupy('rest-1', tableId)).rejects.toThrow(TableNotAvailableError)
+
+        await service.changeStatus('rest-1', tableId, 'reservada')
+        await expect(service.occupy('rest-1', tableId)).rejects.toThrow(TableNotAvailableError)
+    })
+
+    it('relies on the conditional update of the repository', async () => {
+        // The table looks free when it is read, but another request occupies it first.
+        tableRepository.occupy = async () => false
+        await expect(service.occupy('rest-1', tableId)).rejects.toThrow(TableNotAvailableError)
+    })
+
+    it('throws TableNotFoundError for a missing table or a table of another restaurant', async () => {
+        await expect(service.occupy('rest-1', 'nope')).rejects.toThrow(TableNotFoundError)
+        await expect(service.occupy('rest-2', tableId)).rejects.toThrow(TableNotFoundError)
     })
 })

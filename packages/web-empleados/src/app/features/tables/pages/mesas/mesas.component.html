@@ -1,0 +1,49 @@
+<div class="page-header">
+  <h1>Mesas</h1>
+</div>
+
+@if (tableStore.loading() && tableStore.tables().length === 0) {
+  <div class="spinner"></div>
+}
+
+@if (tableStore.error()) {
+  <div class="alert-error">{{ tableStore.error() }}</div>
+}
+
+@if (!tableStore.loading() || tableStore.tables().length > 0) {
+  @if (tableStore.tables().length === 0) {
+    <div class="empty-state">
+      <p>No hay mesas en este restaurante</p>
+    </div>
+  } @else {
+    <div class="tables-grid">
+      @for (table of tableStore.tables(); track table.id) {
+        <div class="table-card">
+          <div class="table-header">
+            <span class="table-number">Mesa {{ table.number }}</span>
+            <span [class]="'badge badge-' + table.status">{{ table.status }}</span>
+          </div>
+          <div class="table-body">
+            @if (table.description) {
+              <p class="table-description">{{ table.description }}</p>
+            }
+            <p class="table-capacity">Capacidad: {{ table.capacity }}</p>
+            <div class="status-actions" role="group" [attr.aria-label]="'Estado de la mesa ' + table.number">
+              @for (status of statuses; track status) {
+                <button
+                  type="button"
+                  class="btn btn-sm"
+                  [class.btn-primary]="table.status === status"
+                  [class.btn-secondary]="table.status !== status"
+                  [attr.aria-pressed]="table.status === status"
+                  (click)="changeStatus(table.id, status)">
+                  {{ status }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+}

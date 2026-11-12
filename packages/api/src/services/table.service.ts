@@ -9,7 +9,8 @@ import {
     DuplicatedTableNumberError,
     RestaurantNotFoundError,
     TableNotFoundError,
-    TableOccupiedError
+    TableOccupiedError,
+    InvalidPeopleCountError
 } from '@errors/DomainErrors.js'
 
 export interface TableInput {
@@ -83,6 +84,18 @@ export class TableService {
         }
         await this.tableRepository.save(table)
         return table
+    }
+
+    async findAvailable(restaurantId: string, people: number): Promise<Table[]> {
+        if (typeof people !== 'number' || !Number.isInteger(people) || people < 1) {
+            throw new InvalidPeopleCountError()
+        }
+        const tables = await this.tableRepository.findByRestaurantId(restaurantId)
+        // The repository already returns the tables ordered by number and sort() is stable,
+        // so ties in capacity keep the number order.
+        return tables
+            .filter(t => t.status === 'libre' && t.capacity >= people)
+            .sort((a, b) => a.capacity - b.capacity)
     }
 
     async changeStatus(restaurantId: string, tableId: string, status: string): Promise<Table> {

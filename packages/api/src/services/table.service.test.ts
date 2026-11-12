@@ -9,7 +9,8 @@ import {
     DuplicatedTableNumberError,
     RestaurantNotFoundError,
     TableNotFoundError,
-    TableOccupiedError
+    TableOccupiedError,
+    InvalidPeopleCountError
 } from '@errors/DomainErrors.js'
 
 async function buildService() {
@@ -184,5 +185,47 @@ describe('TableService.changeStatus', () => {
     it('throws TableNotFoundError for a missing table or a table of another restaurant', async () => {
         await expect(service.changeStatus('rest-1', 'nope', 'libre')).rejects.toThrow(TableNotFoundError)
         await expect(service.changeStatus('rest-2', tableId, 'libre')).rejects.toThrow(TableNotFoundError)
+    })
+})
+
+describe('TableService.findAvailable', () => {
+    let service: TableService
+
+    beforeEach(async () => {
+        ({ service } = await buildService())
+        await service.create('rest-1', { number: '1', capacity: 2 })
+        await service.create('rest-1', { number: '2', capacity: 6 })
+        await service.create('rest-1', { number: '3', capacity: 4 })
+        await service.create('rest-1', { number: '4', capacity: 4 })
+        await service.create('rest-1', { number: '5', capacity: 8, status: 'ocupada' })
+        await service.create('rest-1', { number: '6', capacity: 8, status: 'reservada' })
+        await service.create('rest-1', { number: '10', capacity: 4 })
+        await service.create('rest-2', { number: '1', capacity: 10 })
+    })
+
+    it('returns only free tables of the restaurant with enough capacity', async () => {
+        const tables = await service.findAvailable('rest-1', 5)
+        expect(tables.map(t => t.number)).toEqual(['2'])
+        expect(tables.every(t => t.status === 'libre' && t.restaurantId === 'rest-1')).toBe(true)
+    })
+
+    it('orders by capacity ascending and then by number', async () => {
+        const tables = await service.findAvailable('rest-1', 3)
+        expect(tables.map(t => `${t.number}:${t.capacity}`)).toEqual(['3:4', '4:4', '10:4', '2:6'])
+    })
+
+    it('includes tables whose capacity equals the number of people', async () => {
+        expect((await service.findAvailable('rest-1', 2)).map(t => t.number)).toEqual(['1', '3', '4', '10', '2'])
+    })
+
+    it('returns an empty list when nothing fits or the restaurant does not exist', async () => {
+        expect(await service.findAvailable('rest-1', 9)).toEqual([])
+        expect(await service.findAvailable('nope', 1)).toEqual([])
+    })
+
+    it('throws InvalidPeopleCountError when people is not an integer >= 1', async () => {
+        for (const people of [0, -1, 2.5, Number.NaN, undefined]) {
+            await expect(service.findAvailable('rest-1', people as unknown as number)).rejects.toThrow(InvalidPeopleCountError)
+        }
     })
 })

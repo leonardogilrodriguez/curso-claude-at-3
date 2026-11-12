@@ -68,43 +68,43 @@ Cada tarea de la API empieza por sus tests (TDD, `npm test`). Los frontends no t
 
 ### API (con TDD)
 
-1. [ ] Crear el modelo `Table`, los estados `libre | ocupada | reservada` y `normalizeTableStatus()`, con sus tests (estado inválido, mayúsculas/espacios) — `packages/api/src/models/table.model.ts` (~8 min)
-2. [ ] Añadir los errores de dominio de mesas y registrar `TableNotFoundError` en `NOT_FOUND_ERRORS`; test del mapeo a 404 — `packages/api/src/errors/DomainErrors.ts` (~6 min)
-3. [ ] Crear la tabla `tables` (`id`, `restaurant_id` FK, `number`, `description`, `capacity`, `status`, `created_at`, `updated_at`, `UNIQUE(restaurant_id, number)`) y su test de migración — `packages/api/src/config/database.ts` (~8 min)
-4. [ ] Tests del repositorio (guardar, buscar por id, listar por restaurante, actualizar, borrar, número duplicado) — `packages/api/src/repositories/table.repository.test.ts` (~10 min)
-5. [ ] Implementar `SqliteTableRepository` y `MockTableRepository` hasta pasar los tests — `packages/api/src/repositories/table.repository.ts` (~10 min)
-6. [ ] Tests del servicio para crear/editar: número obligatorio, capacidad ≥ 1 entera, número duplicado, estado inicial `libre` — `packages/api/src/services/table.service.test.ts` (~8 min)
-7. [ ] Implementar `create`, `update`, `findByRestaurantId`, `findById` y `delete` en `TableService` — `packages/api/src/services/table.service.ts` (~10 min)
-8. [ ] Tests de cambio de estado (`changeStatus`, transiciones libre/ocupada/reservada, mesa inexistente o de otro restaurante) e implementación — `packages/api/src/services/table.service.test.ts` (~8 min)
-9. [ ] Tests de `findAvailable(restaurantId, people)`: solo `libre` con `capacity >= people`, ordenadas por capacidad ascendente y número; personas < 1 inválido; e implementación — `packages/api/src/services/table.service.ts` (~8 min)
-10. [ ] Tests de `occupy(restaurantId, tableId)`: libre → ocupada; si ya no está libre lanza `TableNotAvailableError`; la actualización es condicional (`UPDATE … WHERE status='libre'`) para evitar carreras; e implementación — `packages/api/src/repositories/table.repository.ts` (~10 min)
-11. [ ] Controlador y rutas admin/empleados: CRUD solo `admin` (y `manager` de su restaurante, si se decide), `GET` y `PATCH /:id/status` para `admin`, `manager`, `camarero`; montarlas en `app.ts`; tests HTTP con supertest si ya está disponible, si no, comprobación con `curl` — `packages/api/src/routes/table.routes.ts` (~10 min)
-12. [ ] Rutas para clientes: `GET /public/restaurants/:restaurantId/tables/available?people=N` y `POST …/tables/:id/occupy` (autenticado, rol `cliente`) — `packages/api/src/routes/table.public.routes.ts` (~8 min)
-13. [ ] Tests de `OrderService.create` con `tableId`: mesa inexistente, de otro restaurante o no ocupada → error; sin `tableId` se sigue aceptando; e implementación — `packages/api/src/services/order.service.ts` (~10 min)
-14. [ ] Añadir mesas al seed (varias capacidades y estados por restaurante) y actualizar `docs/dominio/modelo-datos.md` — `packages/api/src/scripts/seed.ts` (~8 min)
+1. [x] Crear el modelo `Table`, los estados `libre | ocupada | reservada` y `normalizeTableStatus()`, con sus tests (estado inválido, mayúsculas/espacios) — `packages/api/src/models/table.model.ts` (~8 min)
+2. [x] Añadir los errores de dominio de mesas y registrar `TableNotFoundError` en `NOT_FOUND_ERRORS`; test del mapeo a 404 — `packages/api/src/errors/DomainErrors.ts` (~6 min)
+3. [x] Crear la tabla `tables` (`id`, `restaurant_id` FK, `number`, `description`, `capacity`, `status`, `created_at`, `updated_at`, `UNIQUE(restaurant_id, number)`) y su test de migración — `packages/api/src/config/database.ts` (~8 min)
+4. [x] Tests del repositorio (guardar, buscar por id, listar por restaurante, actualizar, borrar, número duplicado) — `packages/api/src/repositories/table.repository.test.ts` (~10 min)
+5. [x] Implementar `SqliteTableRepository` y `MockTableRepository` hasta pasar los tests — `packages/api/src/repositories/table.repository.ts` (~10 min)
+6. [x] Tests del servicio para crear/editar: número obligatorio, capacidad ≥ 1 entera, número duplicado, estado inicial `libre` — `packages/api/src/services/table.service.test.ts` (~8 min)
+7. [x] Implementar `create`, `update`, `findByRestaurantId`, `findById` y `delete` en `TableService` — `packages/api/src/services/table.service.ts` (~10 min)
+8. [x] Tests de cambio de estado (`changeStatus`, transiciones libre/ocupada/reservada, mesa inexistente o de otro restaurante) e implementación — `packages/api/src/services/table.service.test.ts` (~8 min)
+9. [x] Tests de `findAvailable(restaurantId, people)`: solo `libre` con `capacity >= people`, ordenadas por capacidad ascendente y número; personas < 1 inválido; e implementación — `packages/api/src/services/table.service.ts` (~8 min)
+10. [x] Tests de `occupy(restaurantId, tableId)`: libre → ocupada; si ya no está libre lanza `TableNotAvailableError`; la actualización es condicional (`UPDATE … WHERE status='libre'`) para evitar carreras; e implementación — `packages/api/src/repositories/table.repository.ts` (~10 min)
+11. [x] Controlador y rutas admin/empleados: CRUD solo `admin` (y `manager` de su restaurante, si se decide), `GET` y `PATCH /:id/status` para `admin`, `manager`, `camarero`; montarlas en `app.ts`; tests HTTP con supertest si ya está disponible, si no, comprobación con `curl` — `packages/api/src/routes/table.routes.ts` (~10 min)
+12. [x] Rutas para clientes: `GET /public/restaurants/:restaurantId/tables/available?people=N` y `POST …/tables/:id/occupy` (autenticado, rol `cliente`) — `packages/api/src/routes/table.public.routes.ts` (~8 min)
+13. [x] Tests de `OrderService.create` con `tableId`: mesa inexistente, de otro restaurante o no ocupada → error; sin `tableId` se sigue aceptando; e implementación — `packages/api/src/services/order.service.ts` (~10 min)
+14. [x] Añadir mesas al seed (varias capacidades y estados por restaurante) y actualizar `docs/dominio/modelo-datos.md` — `packages/api/src/scripts/seed.ts` (~8 min)
 
 ### web-admin
 
-15. [ ] Modelo `Table`, `CreateTableDto` y `TableService` HTTP — `packages/web-admin/src/app/features/tables/services/table.service.ts` (~8 min)
-16. [ ] `TableStore` con señales (cargar por restaurante ignorando respuestas obsoletas, crear, actualizar, borrar) — `packages/web-admin/src/app/features/tables/store/table.store.ts` (~8 min)
-17. [ ] Página de lista de mesas con estado como etiqueta, editar y borrar — `packages/web-admin/src/app/features/tables/pages/table-list/table-list.component.ts` (~10 min)
-18. [ ] Formulario de mesa (número, descripción, capacidad, estado) con validación y etiquetas accesibles — `packages/web-admin/src/app/features/tables/pages/table-form/table-form.component.ts` (~10 min)
-19. [ ] Rutas `tables` (con `loadChildren`) y enlace «Mesas» en el menú lateral — `packages/web-admin/src/app/features/tables/tables.routes.ts` (~6 min)
+15. [x] Modelo `Table`, `CreateTableDto` y `TableService` HTTP — `packages/web-admin/src/app/features/tables/services/table.service.ts` (~8 min)
+16. [x] `TableStore` con señales (cargar por restaurante ignorando respuestas obsoletas, crear, actualizar, borrar) — `packages/web-admin/src/app/features/tables/store/table.store.ts` (~8 min)
+17. [x] Página de lista de mesas con estado como etiqueta, editar y borrar — `packages/web-admin/src/app/features/tables/pages/table-list/table-list.component.ts` (~10 min)
+18. [x] Formulario de mesa (número, descripción, capacidad, estado) con validación y etiquetas accesibles — `packages/web-admin/src/app/features/tables/pages/table-form/table-form.component.ts` (~10 min)
+19. [x] Rutas `tables` (con `loadChildren`) y enlace «Mesas» en el menú lateral — `packages/web-admin/src/app/features/tables/tables.routes.ts` (~6 min)
 
 ### web-empleados
 
-20. [ ] Modelo, `TableService` y `TableStore` con polling de mesas del restaurante del empleado — `packages/web-empleados/src/app/features/tables/store/table.store.ts` (~10 min)
-21. [ ] Página «Mesas»: tarjetas por mesa con su estado y selector/botones para cambiarlo — `packages/web-empleados/src/app/features/tables/pages/mesas/mesas.component.ts` (~10 min)
-22. [ ] Mostrar en cada mesa ocupada el estado de sus pedidos (reutiliza `OrderStore`, agrupando por `tableId`) — `packages/web-empleados/src/app/features/tables/pages/mesas/mesas.component.ts` (~10 min)
-23. [ ] Ruta `mesas` y enlace en el menú (visible para `camarero` y `manager`) — `packages/web-empleados/src/app/core/layout/shell.component.ts` (~6 min)
+20. [x] Modelo, `TableService` y `TableStore` con polling de mesas del restaurante del empleado — `packages/web-empleados/src/app/features/tables/store/table.store.ts` (~10 min)
+21. [x] Página «Mesas»: tarjetas por mesa con su estado y selector/botones para cambiarlo — `packages/web-empleados/src/app/features/tables/pages/mesas/mesas.component.ts` (~10 min)
+22. [x] Mostrar en cada mesa ocupada el estado de sus pedidos (reutiliza `OrderStore`, agrupando por `tableId`) — `packages/web-empleados/src/app/features/tables/pages/mesas/mesas.component.ts` (~10 min)
+23. [x] Ruta `mesas` y enlace en el menú (visible para `camarero` y `manager`) — `packages/web-empleados/src/app/core/layout/shell.component.ts` (~6 min)
 
 ### web-clientes
 
-24. [ ] Modelo y `TableService` (disponibles por personas, ocupar) — `packages/web-clientes/src/app/core/services/table.service.ts` (~8 min)
-25. [ ] Guardar `tableId` en `CartStore` (se vacía al cambiar de restaurante) y enviarlo en `OrderService.createOrder` — `packages/web-clientes/src/app/core/store/cart.store.ts` (~8 min)
-26. [ ] Componente de selección: campo de número de personas, lista de mesas disponibles y botón Continuar deshabilitado hasta elegir una — `packages/web-clientes/src/app/features/tables/table-select.component.ts` (~10 min)
-27. [ ] Al continuar: llamar a «ocupar», guardar la mesa y navegar a la carta; si la mesa ya no está libre, mostrar error y recargar la lista — `packages/web-clientes/src/app/features/tables/table-select.component.ts` (~8 min)
-28. [ ] Ruta `restaurants/:id/table`, enlazar desde la lista de restaurantes y redirigir desde la carta si no hay mesa — `packages/web-clientes/src/app/app.routes.ts` (~8 min)
+24. [x] Modelo y `TableService` (disponibles por personas, ocupar) — `packages/web-clientes/src/app/core/services/table.service.ts` (~8 min)
+25. [x] Guardar `tableId` en `CartStore` (se vacía al cambiar de restaurante) y enviarlo en `OrderService.createOrder` — `packages/web-clientes/src/app/core/store/cart.store.ts` (~8 min)
+26. [x] Componente de selección: campo de número de personas, lista de mesas disponibles y botón Continuar deshabilitado hasta elegir una — `packages/web-clientes/src/app/features/tables/table-select.component.ts` (~10 min)
+27. [x] Al continuar: llamar a «ocupar», guardar la mesa y navegar a la carta; si la mesa ya no está libre, mostrar error y recargar la lista — `packages/web-clientes/src/app/features/tables/table-select.component.ts` (~8 min)
+28. [x] Ruta `restaurants/:id/table`, enlazar desde la lista de restaurantes y redirigir desde la carta si no hay mesa — `packages/web-clientes/src/app/app.routes.ts` (~8 min)
 
 ### Verificación final
 

@@ -66,6 +66,12 @@ import { OrderService } from '../../core/services/order.service'
             @if (error()) {
               <p class="error-msg">{{ error() }}</p>
             }
+            @if (tableError() && cartStore.restaurantId()) {
+              <a [routerLink]="['/restaurants', cartStore.restaurantId(), 'table']"
+                 class="btn btn-secondary" style="width: 100%; justify-content: center; margin-top: 8px;">
+                Elegir otra mesa
+              </a>
+            }
           </aside>
         </div>
       }
@@ -175,6 +181,7 @@ export class CartComponent {
 
   readonly loading = signal(false)
   readonly error = signal<string | null>(null)
+  readonly tableError = signal(false)
 
   increment(dishId: string): void {
     const item = this.cartStore.items().find(i => i.dish.id === dishId)
@@ -200,6 +207,7 @@ export class CartComponent {
 
     this.loading.set(true)
     this.error.set(null)
+    this.tableError.set(false)
 
     const items = this.cartStore.items().map(item => ({
       dishId: item.dish.id,
@@ -207,13 +215,20 @@ export class CartComponent {
       notes: item.notes || null
     }))
 
-    this.orderService.createOrder(restaurantId, items).subscribe({
+    this.orderService.createOrder(restaurantId, this.cartStore.tableIdFor(restaurantId), items).subscribe({
       next: (order) => {
         this.cartStore.clear()
         this.router.navigate(['/orders', order.id])
       },
       error: (err) => {
-        this.error.set('Error al confirmar el pedido. Inténtalo de nuevo.')
+        const detail: string | undefined = err?.error?.message ?? err?.error?.error
+        if (err?.status === 400 && detail && /table/i.test(detail)) {
+          this.cartStore.clearTable()
+          this.tableError.set(true)
+          this.error.set('La mesa ya no es válida. Elige una mesa de nuevo.')
+        } else {
+          this.error.set('Error al confirmar el pedido. Inténtalo de nuevo.')
+        }
         this.loading.set(false)
       }
     })

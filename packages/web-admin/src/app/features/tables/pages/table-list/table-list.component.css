@@ -1,0 +1,28 @@
+.table-number {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.badge-libre {
+  background: var(--green-glow);
+  color: var(--green-light);
+}
+
+.badge-ocupada {
+  background: var(--orange-glow);
+  color: var(--orange);
+}
+
+.badge-reservada {
+  background: var(--yellow-glow);
+  color: var(--yellow);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

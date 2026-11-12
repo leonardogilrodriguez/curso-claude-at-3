@@ -96,7 +96,7 @@ Cada tarea de la API empieza por sus tests (TDD, `npm test`). Los frontends no t
 20. [x] Modelo, `TableService` y `TableStore` con polling de mesas del restaurante del empleado — `packages/web-empleados/src/app/features/tables/store/table.store.ts` (~10 min)
 21. [x] Página «Mesas»: tarjetas por mesa con su estado y selector/botones para cambiarlo — `packages/web-empleados/src/app/features/tables/pages/mesas/mesas.component.ts` (~10 min)
 22. [x] Mostrar en cada mesa ocupada el estado de sus pedidos (reutiliza `OrderStore`, agrupando por `tableId`) — `packages/web-empleados/src/app/features/tables/pages/mesas/mesas.component.ts` (~10 min)
-23. [ ] Ruta `mesas` y enlace en el menú (visible para `camarero` y `manager`) — `packages/web-empleados/src/app/core/layout/shell.component.ts` (~6 min)
+23. [x] Ruta `mesas` y enlace en el menú (visible para `camarero` y `manager`) — `packages/web-empleados/src/app/core/layout/shell.component.ts` (~6 min)
 
 ### web-clientes
 
